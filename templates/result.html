@@ -32,13 +32,15 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><a class="btn btn-sm btn-success" href="/edit/{{ records.id }}"><span class="glyphicon glyphicon-pencil"></span></a></td>
-                                <td><a class="btn btn-sm btn-danger confirmation" href="/delete/{{ records.id }}"><span class="glyphicon glyphicon-trash"></span></a></td>
-                                <td style="text-align: center">{{ records.title }}</td>
-                                <td style="text-align: center">{{ records.author }}</td>
-                                <td style="text-align: center">{{ records.year }}</td>
-                            </tr>
+                            {% for r in records %}
+                                <tr>
+                                    <td><a class="btn btn-sm btn-success" href="/edit/{{ r.id }}"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                                    <td><a class="btn btn-sm btn-danger confirmation" href="/delete/{{ r.id }}"><span class="glyphicon glyphicon-trash"></span></a></td>
+                                    <td style="text-align: center">{{ r.title }}</td>
+                                    <td style="text-align: center">{{ r.author }}</td>
+                                    <td style="text-align: center">{{ r.year }}</td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>

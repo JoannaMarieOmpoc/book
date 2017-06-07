@@ -48,15 +48,15 @@ def records():
     if request.method == 'POST':
         if form.validate_on_submit():
             if Records.query.filter_by(title=form.search.data).first():
-                result = Records.query.filter_by(title=form.search.data).first()
+                result = Records.query.order_by(Records.year).filter_by(title=form.search.data)
                 return render_template('result.html', records=result, form=form)
 
             elif Records.query.filter_by(author=form.search.data).first():
-                result = Records.query.filter_by(author=form.search.data).first()
+                result = Records.query.filter_by(author=form.search.data)
                 return render_template('result.html', records=result, form=form)
 
             elif Records.query.filter_by(year=form.search.data).first():
-                result = Records.query.filter_by(year=form.search.data).first()
+                result = Records.query.filter_by(year=form.search.data)
                 return render_template('result.html', records=result, form=form)
 
             else:
@@ -75,24 +75,28 @@ def addrecords():
                               year=form.year.data)
             db.session.add(records)
             db.session.commit()
-            result = Records.query.all()
+            result = Records.query.order_by(Records.year)
             form1=SearchForm()
             return render_template('records.html', records=result, form=form1)
     return render_template('addrecords.html', form=form)
 
 @app.route('/edit/<id>', methods=['POST', 'GET'])
 def editrecords(id):
-    records = Records.query.filter_by(id=id).first
+    records = Records.query.filter_by(id=id).first()
     form = RecordsForm()
     if form.validate_on_submit():
-        records1 = Records(title=form.title.data,
-                          author=form.author.data,
-                          year=form.year.data)
-        db.session.add(records1)
+        records.title = form.title.data
+        records.author = form.author.data
+        records.year = form.year.data
+        db.session.add(records)
         db.session.commit()
-        result = Records.query.all()
+        result = Records.query.order_by(Records.year)
         form1 = SearchForm()
         return render_template('records.html', records=result, form=form1)
+    else:
+        form.title.data = records.title
+        form.author.data = records.author
+        form.year.data = records.year
     return render_template('addrecords.html', form=form)
 
 @app.route('/delete/<id>', methods=['GET','POST'])
@@ -100,7 +104,7 @@ def remove(id):
     result = Records.query.filter_by(id=id).first()
     db.session.delete(result)
     db.session.commit()
-    records = Records.query.all()
+    records = Records.query.order_by(Records.year)
     form=SearchForm()
     return render_template('records.html', records=records, form=form)
 
